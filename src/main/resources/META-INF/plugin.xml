@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>org.jetbrains.plugins.tabgroups</id>
+    <id>io.github.tkpixel.tabgroups</id>
     <name>Tab Groups</name>
     <vendor>Example Vendor</vendor>
     <description><![CDATA[
