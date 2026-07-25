@@ -17,12 +17,19 @@ class TabGroupColorProvider : EditorTabColorProvider {
         val groupId = state.fileToGroupMap[fileUrl] ?: return null
 
         val group = state.groups.find { it.id == groupId } ?: return null
-        val colorHex = group.color
+        val colorValue = group.color
 
-        if (colorHex.isEmpty()) return null
+        if (colorValue.isEmpty()) return null
 
+        // Try to parse it as TabColor enum first
+        val tabColor = TabColor.fromString(colorValue)
+        if (tabColor != null) {
+            return tabColor.toJBColor()
+        }
+
+        // Fallback to hex parsing for backward compatibility
         return try {
-            ColorUtil.fromHex(colorHex)
+            ColorUtil.fromHex(colorValue)
         } catch (e: IllegalArgumentException) {
             null
         }
