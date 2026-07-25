@@ -4,16 +4,18 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import kotlinx.coroutines.CoroutineScope
 
 import org.jetbrains.plugins.template.models.TabGroup
 import org.jetbrains.plugins.template.models.TabState
+import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
 @State(
     name = "TabGroupSettings",
     storages = [Storage("TabGroups.xml")]
 )
-class TabGroupStateService : PersistentStateComponent<TabState> {
+class TabGroupStateService(val project: Project, val coroutineScope: CoroutineScope) : PersistentStateComponent<TabState> {
 
     private var myState = TabState()
 
