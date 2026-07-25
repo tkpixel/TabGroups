@@ -17,9 +17,20 @@
         <postStartupActivity implementation="org.jetbrains.plugins.template.startup.MyProjectActivity" />
         <editorTabColorProvider implementation="org.jetbrains.plugins.template.ui.TabGroupColorProvider" order="first" />
         <editorTabTitleProvider implementation="org.jetbrains.plugins.template.ui.TabGroupTitleProvider" order="first" />
+        <projectConfigurable parentId="tools" instance="org.jetbrains.plugins.template.settings.TabGroupsSettingsConfigurable"
+                             id="org.jetbrains.plugins.template.settings.TabGroupsSettingsConfigurable" displayName="Tab Groups"/>
     </extensions>
 
     <projectListeners>
         <listener class="org.jetbrains.plugins.template.listeners.TabGroupFileEditorListener" topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
     </projectListeners>
+
+    <actions>
+        <group id="TabGroups.EditorTabPopupMenu" popup="true" text="Tab Groups">
+            <add-to-group group-id="EditorTabPopupMenu" anchor="last"/>
+            <action id="TabGroups.AddToNewGroup" class="org.jetbrains.plugins.template.actions.AddToNewGroupAction" text="Add to New Group..."/>
+            <group id="TabGroups.AddToExistingGroup" class="org.jetbrains.plugins.template.actions.AddToExistingGroupActionGroup" text="Add to Existing Group"/>
+            <action id="TabGroups.RemoveFromGroup" class="org.jetbrains.plugins.template.actions.RemoveFromGroupAction" text="Remove from Group"/>
+        </group>
+    </actions>
 </idea-plugin>
