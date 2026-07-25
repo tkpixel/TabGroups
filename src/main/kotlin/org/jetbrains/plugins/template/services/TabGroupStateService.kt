@@ -23,4 +23,12 @@ class TabGroupStateService : PersistentStateComponent<TabState> {
     override fun loadState(state: TabState) {
         myState = state
     }
+
+    fun assignFileToGroup(fileUrl: String, groupId: String) {
+        myState.fileToGroupMap[fileUrl] = groupId
+    }
+
+    fun removeFileFromGroup(fileUrl: String) {
+        myState.fileToGroupMap.remove(fileUrl)
+    }
 }
