@@ -17,6 +17,11 @@ import java.awt.FlowLayout
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
 
 class MyToolWindowFactory : ToolWindowFactory {
 
@@ -76,35 +81,45 @@ class MyToolWindowFactory : ToolWindowFactory {
         private fun collapseGroup(group: TabGroup) {
             group.isCollapsed = true
             stateService.updateGroup(group)
+            updateList() // Update UI immediately to show collapsed state
 
             val fileUrls = stateService.state.fileToGroupMap.filterValues { it == group.id }.keys
-            val fileEditorManager = FileEditorManager.getInstance(project)
-            val virtualFileManager = VirtualFileManager.getInstance()
 
-            for (url in fileUrls) {
-                val file = virtualFileManager.findFileByUrl(url)
-                if (file != null) {
-                    fileEditorManager.closeFile(file)
+            stateService.coroutineScope.launch(Dispatchers.IO) {
+                val virtualFileManager = VirtualFileManager.getInstance()
+                val filesToClose = readAction {
+                    fileUrls.mapNotNull { virtualFileManager.findFileByUrl(it) }
+                }
+
+                withContext(Dispatchers.EDT) {
+                    val fileEditorManager = FileEditorManager.getInstance(project)
+                    for (file in filesToClose) {
+                        fileEditorManager.closeFile(file)
+                    }
                 }
             }
-            updateList()
         }
 
         private fun expandGroup(group: TabGroup) {
             group.isCollapsed = false
             stateService.updateGroup(group)
+            updateList() // Update UI immediately to show expanded state
 
             val fileUrls = stateService.state.fileToGroupMap.filterValues { it == group.id }.keys
-            val fileEditorManager = FileEditorManager.getInstance(project)
-            val virtualFileManager = VirtualFileManager.getInstance()
 
-            for (url in fileUrls) {
-                val file = virtualFileManager.findFileByUrl(url)
-                if (file != null) {
-                    fileEditorManager.openFile(file, true)
+            stateService.coroutineScope.launch(Dispatchers.IO) {
+                val virtualFileManager = VirtualFileManager.getInstance()
+                val filesToOpen = readAction {
+                    fileUrls.mapNotNull { virtualFileManager.findFileByUrl(it) }
+                }
+
+                withContext(Dispatchers.EDT) {
+                    val fileEditorManager = FileEditorManager.getInstance(project)
+                    for (file in filesToOpen) {
+                        fileEditorManager.openFile(file, true)
+                    }
                 }
             }
-            updateList()
         }
 
         inner class GroupCellRenderer : DefaultListCellRenderer() {
