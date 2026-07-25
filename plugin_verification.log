@@ -1,0 +1,2 @@
+Calculating task graph as no cached configuration is available for tasks: verifyPlugin
+[org.jetbrains.intellij.platform] The verifyPlugin task is about to resolve 8 IDEs: idea:idea:262.9437.22, idea:idea:2026.1.4, idea:idea:2025.3.6, idea:ideaIU:2025.2.6.2, idea:ideaIU:2025.1.7.1, idea:ideaIU:2024.3.7.1, idea:ideaIU:2024.2.6, idea:ideaIU:2024.1.7
